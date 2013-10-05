@@ -8,17 +8,17 @@ import gobject
 from mopidy import exceptions, ext
 
 
-__version__ = '0.3'
+__version__ = '0.1'
 
 default_config = b"""
-[nad]
+[arcam]
 enabled = true
 """
 
 
 class Extension(ext.Extension):
-    dist_name = 'Mopidy-NAD'
-    ext_name = 'nad'
+    dist_name = 'Mopidy-Arcam'
+    ext_name = 'arcam'
     version = __version__
 
     def get_default_config(self):
@@ -31,6 +31,6 @@ class Extension(ext.Extension):
             raise exceptions.ExtensionError('pyserial library not found', e)
 
     def register_gstreamer_elements(self):
-        from .mixer import NadMixer
-        gobject.type_register(NadMixer)
-        gst.element_register(NadMixer, 'nadmixer', gst.RANK_MARGINAL)
+        from .mixer import ArcamMixer
+        gobject.type_register(ArcamMixer)
+        gst.element_register(ArcamMixer, 'arcammixer', gst.RANK_MARGINAL)

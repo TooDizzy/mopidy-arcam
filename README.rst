@@ -1,16 +1,16 @@
 **********
-Mopidy-NAD
+Mopidy-Arcam
 **********
 
 `Mopidy <http://www.mopidy.com/>`_ extension for controlling volume using an
-external NAD amplifier. Developed and tested with a NAD C355BEE.
+external Arcam amplifier. Developed and tested with an Arcam AVR-300.
 
 Installation
 ============
 
 Install by running::
 
-    sudo pip install Mopidy-NAD
+    sudo pip install Mopidy-Arcam
 
 Or install the Debian/Ubuntu package from `apt.mopidy.com
 <http://apt.mopidy.com/>`_.
@@ -19,17 +19,17 @@ Or install the Debian/Ubuntu package from `apt.mopidy.com
 Configuration
 =============
 
-The Mopidy-NAD extension is enabled by default. To disable it, add the
+The Mopidy-Arcam extension is enabled by default. To disable it, add the
 following to ``mopidy.conf``::
 
-    [nad]
+    [arcam]
     enabled = false
 
-The NAD amplifier must be connected to the machine running Mopidy using a
+The Arcam amplifier must be connected to the machine running Mopidy using a
 serial cable.
 
-To use the NAD amplifier ot control volume, set the ``audio/mixer`` config
-value in ``mopidy.conf`` to ``nadmixer``. You probably also needs to add some
+To use the Arcam amplifier ot control volume, set the ``audio/mixer`` config
+value in ``mopidy.conf`` to ``arcammixer``. You probably also needs to add some
 properties to the ``audio/mixer`` config value.
 
 Supported properties includes:
@@ -39,8 +39,8 @@ Supported properties includes:
     set correctly for the mixer to work.
 
 ``source``:
-    The source that should be selected on the amplifier, like ``aux``,
-    ``disc``, ``tape``, ``tuner``, etc. Leave unset if you don't want the
+    The source that should be selected on the amplifier, like ``DVD``, ``PVR``,
+    ``VCR``, ``CD``, ``FM``, ``AM``, ``SAT``, ``DVDA``, etc. Leave unset if you don't want the
     mixer to change it for you.
 
 ``speakers-a``:
@@ -55,39 +55,28 @@ Configuration examples::
 
     # Minimum configuration, if the amplifier is available at /dev/ttyUSB0
     [audio]
-    mixer = nadmixer
+    mixer = arcammixer
 
     # Minimum configuration, if the amplifier is available elsewhere
     [audio]
-    mixer = nadmixer port=/dev/ttyUSB3
+    mixer = arcammixer port=/dev/ttyUSB3
 
     # Full configuration
     [audio]
-    mixer = nadmixer port=/dev/ttyUSB0 source=aux speakers-a=on speakers-b=off
+    mixer = arcammixer port=/dev/ttyUSB0 source=aux speakers-a=on speakers-b=off
 
 
 Project resources
 =================
 
-- `Source code <https://github.com/mopidy/mopidy-nad>`_
-- `Issue tracker <https://github.com/mopidy/mopidy/issues>`_
-- `Download development snapshot <https://github.com/mopidy/mopidy-nad/tarball/develop#egg=Mopidy-NAD-dev>`_
+- `Source code <https://github.com/TooDizzy/mopidy-arcam>`_
+- `Issue tracker <https://github.com/TooDizzy/mopidy-arcam/issues>`_
+- `Download development snapshot <https://github.com/TooDizzy/mopidy-arcam/tarball/develop#egg=Mopidy-Arcam-dev>`_
 
 
 Changelog
 =========
-
-v0.3 (2013-04-16)
+v0.1 (2013-10-05)
 -----------------
 
-- Include ``README.rst`` and ``LICENSE`` in PyPI package.
-
-v0.2 (2013-04-16)
------------------
-
-- Add missing ``create_track()`` helper function.
-
-v0.1 (2013-04-16)
------------------
-
-- Extracted extension from Mopidy core.
+- Initial version for the Arcam receiver; based on a fork from the NAD mixer.

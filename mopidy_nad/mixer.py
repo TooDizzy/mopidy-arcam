@@ -14,17 +14,17 @@ try:
 except ImportError:
     serial = None  # noqa
 
-from mopidy_nad import talker
+from mopidy_arcam import talker
 
 
-logger = logging.getLogger('mopidy_nad')
+logger = logging.getLogger('mopidy_arcam')
 
 
-class NadMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
+class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
     __gstdetails__ = (
-        'NadMixer',
+        'ArcamMixer',
         'Mixer',
-        'Mixer to control NAD amplifiers using a serial link',
+        'Mixer to control Arcam amplifiers using a serial link',
         'Mopidy')
 
     port = gobject.property(type=str, default='/dev/ttyUSB0')
@@ -33,7 +33,7 @@ class NadMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
     speakers_b = gobject.property(type=str)
 
     _volume_cache = 0
-    _nad_talker = None
+    _arcam_talker = None
 
     def list_tracks(self):
         track = create_track(
@@ -54,26 +54,30 @@ class NadMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         if len(volumes):
             volume = volumes[0]
             self._volume_cache = volume
-            self._nad_talker.set_volume(volume)
+            self._arcam_talker.set_volume(volume)
 
     def set_mute(self, track, mute):
-        self._nad_talker.mute(mute)
+        self._arcam_talker.mute(mute)
 
     def do_change_state(self, transition):
         if transition == gst.STATE_CHANGE_NULL_TO_READY:
             if serial is None:
-                logger.warning('nadmixer dependency pyserial not found')
+                logger.warning('arcammixer dependency pyserial not found')
                 return gst.STATE_CHANGE_FAILURE
-            self._start_nad_talker()
+            self._start_arcam_talker()
         return gst.STATE_CHANGE_SUCCESS
 
-    def _start_nad_talker(self):
-        self._nad_talker = talker.NadTalker.start(
+    def _start_arcam_talker(self):
+        self._arcam_talker = talker.ArcamTalker.start(
             port=self.port,
             source=self.source or None,
+            # Need to be changed to zones
             speakers_a=self.speakers_a or None,
             speakers_b=self.speakers_b or None
         ).proxy()
+        # Ask for the volume of the Arcam receiver
+        future = self._arcam_talker.get_volume()
+        self._volume_cache = future.get()
 
 
 def create_track(label, initial_volume, min_volume, max_volume,
