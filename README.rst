@@ -63,7 +63,7 @@ Configuration examples::
 
     # Full configuration
     [audio]
-    mixer = arcammixer port=/dev/ttyUSB0 source=aux speakers-a=on speakers-b=off
+    mixer = arcammixer port=/dev/ttyUSB0 source=aux
 
 
 Project resources
