@@ -25,14 +25,15 @@ class ArcamReader(pykka.ThreadingActor):
         # Do not trigger action when write was triggered by talker.
         # Just store the result unless it should be igonred.
         result = None
-        
+        print "Starting loop."
         while self._device.inWaiting():
             print "inWaiting: ", self._device.inWaiting()
             result = self._device.read(self._device.inWaiting())
             print "Result: ", result
         
-        if result != None:
-            self._messages.append(result)
+            if result != None:
+                self._messages.append(result)
+        print "End of loop"
         
     def on_start(self):
         print "starting reader thread."
@@ -41,4 +42,8 @@ class ArcamReader(pykka.ThreadingActor):
     
     def get_answer(self):
         # Return the oldest command
-        return self._messages.pop(0);
+        answer = self._messages.pop(0)
+        print "Answer: ", answer
+        return answer
+    
+    

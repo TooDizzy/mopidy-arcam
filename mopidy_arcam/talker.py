@@ -104,7 +104,7 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self._open_connection()
         
         #Starting the reader
-        self._reader = reader.ArcamReader.start(self._device)
+        self._reader = reader.ArcamReader.start(self._device).proxy()
         
         self._set_device_to_known_state()
 
@@ -200,7 +200,9 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
     def _ask_device(self, key, responseMap=None):
         self._write(self.buildRequestString(key, self.ARCAM_ZONE, self.ASK_DEVICE_KEY))
         resultString = self._readline()
-        
+
+        print "responseMap: ", responseMap
+        print "resultString: ", resultString        
         if len(resultString) > 0:
             if responseMap != None:
                 resultString = responseMap.get(resultString[self.ARCAM_ACTION_PREFIX_LENGTH])
@@ -209,12 +211,10 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
             else:
                 # When no referenced action is found, return RAW type/data
                 resultString = resultString[self.ARCAM_ACTION_PREFIX_LENGTH]
+        print "resultString: ", resultString
         return resultString
 
     def _command_device(self, key, value):
-        #if type(value) == unicode:
-        #    value = value.encode('utf-8')
-        #self._write('%s=%s' % (key, value))
         self._write(self.buildRequestString(key, self.ARCAM_ZONE, value))
         resultString = self._readline()
         if len(resultString) > 0:
@@ -233,12 +233,10 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self._device.write('%s\r\n' % data)
 
     def _readline(self):
-        # Read line from device. The result is stripped for leading and
-        # trailing whitespace.
-        #if not self._device.isOpen():
-        #    self._device.open()
-        #return self._device.readline().strip()
-        return "fest"
+        # Read line from device.        
+        future = self._reader.get_answer()
+        return future.get()
+        
 
     #def track_playback_started(self, tl_track):
         #self._power_device_on()
