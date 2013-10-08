@@ -27,6 +27,7 @@ class ArcamReader(pykka.ThreadingActor):
         result = None
         print "Starting loop."
         while True:
+            self._device.setBreak(True)
             if self._device.inWaiting():
                 print "inWaiting: ", self._device.inWaiting()
                 result = self._device.read(8) # Only read one answer at a time.
@@ -34,9 +35,10 @@ class ArcamReader(pykka.ThreadingActor):
             
                 if result != None:
                     self._messages.append(result)
-                # Sleep for a little while -> Should be handled more elegantly
             else:
+                # Sleep for a little while -> Should be handled more elegantly
                 print "Going to sleep for 5 second"
+                self._device.setBreak(False)
                 time.sleep(5)
         
     def on_start(self):
