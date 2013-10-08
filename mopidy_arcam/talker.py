@@ -4,6 +4,7 @@ import serial
 import time
 
 import mopidy.core
+import reader
 
 logger = logging.getLogger('mopidy_arcam')
 
@@ -101,6 +102,10 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
 
     def on_start(self):
         self._open_connection()
+        
+        #Starting the reader
+        self._reader = reader.ArcamReader.start(self._device)
+        
         self._set_device_to_known_state()
 
     def _open_connection(self):
@@ -230,15 +235,16 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
     def _readline(self):
         # Read line from device. The result is stripped for leading and
         # trailing whitespace.
-        if not self._device.isOpen():
-            self._device.open()
-        return self._device.readline().strip()
+        #if not self._device.isOpen():
+        #    self._device.open()
+        #return self._device.readline().strip()
+        return "fest"
 
-    def track_playback_started(self, tl_track):
-        self._power_device_on()
-        self._select_input_source()
+    #def track_playback_started(self, tl_track):
+        #self._power_device_on()
+        #self._select_input_source()
         
-    def playback_state_changed(self, old_state, new_state):
-        print "Playback state: ", new_state
+    #def playback_state_changed(self, old_state, new_state):
+        #print "Playback state: ", new_state
         
         
