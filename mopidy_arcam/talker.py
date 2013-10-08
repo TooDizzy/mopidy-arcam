@@ -104,8 +104,8 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self._open_connection()
         
         #Starting the reader
-        self._reader = reader.ArcamReader.start(self._device).proxy()
-        
+        self._reader = reader.ArcamReader.start(self._device)
+        time.sleep(0.5)
         self._set_device_to_known_state()
 
     def _open_connection(self):
@@ -234,8 +234,10 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
 
     def _readline(self):
         # Read line from device.        
-        future = self._reader.get_answer()
+        future = self._reader.ask({"Command": "Return response."})
         result = future.get()
+        
+#        result = "AV_*P11"
         print "Result (_readline):", result 
         return result
         

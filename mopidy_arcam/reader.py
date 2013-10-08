@@ -43,6 +43,10 @@ class ArcamReader(pykka.ThreadingActor):
         # Start to listen on the serial port
         self._listen_rx()
     
+    def on_receive(self, message):
+        print "message (reader): ", message
+        return self.get_answer()
+    
     def get_answer(self):
         # Return the oldest command
         answer = self._messages.pop(0)
