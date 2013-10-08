@@ -1,6 +1,6 @@
 import logging
 import pykka
-import serial
+import time
 
 logger = logging.getLogger('mopidy_arcam')
 
@@ -34,6 +34,8 @@ class ArcamReader(pykka.ThreadingActor):
         
                 if result != None:
                     self._messages.append(result)
+                # Sleep for a little while -> Should be handled more elegantly
+                time.sleep(0.5)
         print "End of loop"
         
     def on_start(self):
