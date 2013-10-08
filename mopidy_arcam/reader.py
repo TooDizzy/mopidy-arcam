@@ -22,12 +22,13 @@ class ArcamReader(pykka.ThreadingActor):
         
     def _listen_rx(self):
         # Continuously listen on the serial line for any messages from the Arcam amp.
-        self.lock.acquire()
+        
         # Do not trigger action when write was triggered by talker.
         # Just store the result unless it should be igonred.
         result = None
         print "Starting loop."
         while True:
+            self.lock.acquire(True)
             if self._device.inWaiting():
                 print "inWaiting: ", self._device.inWaiting()
                 result = self._device.read(8) # Only read one answer at a time.
