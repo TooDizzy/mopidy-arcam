@@ -44,12 +44,15 @@ class ArcamReader(pykka.ThreadingActor):
     
     def on_receive(self, message):
         print "message (reader): ", message
-        return self.get_answer()
+        return self._get_answer()
     
-    def get_answer(self):
+    def _get_answer(self):
         # Return the oldest command
-        answer = self._messages.pop(0)
-        print "Answer (reader): ", answer
-        return answer
+        if len(self._messages) > 0:
+            answer = self._messages.pop(0)
+            print "Answer (reader): ", answer
+            return answer
+        else:
+            return None
     
     
