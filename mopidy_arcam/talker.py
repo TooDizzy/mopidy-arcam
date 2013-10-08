@@ -113,6 +113,7 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self._set_device_to_known_state()
 
     def _open_connection(self):
+        self.lock.acquire()
         logger.debug('Arcam amplifier: Connecting through "%s"', self.port)
         self._device = serial.Serial(
             port=self.port,
@@ -122,6 +123,7 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
             stopbits=self.STOPBITS,
             timeout=self.TIMEOUT)
         self._get_device_model()
+        self.lock.release()
 
     def _set_device_to_known_state(self):
         self._power_device_on() # Starting main zone per default.
