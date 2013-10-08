@@ -29,14 +29,14 @@ class ArcamReader(pykka.ThreadingActor):
         while True:
             if self._device.inWaiting():
                 print "inWaiting: ", self._device.inWaiting()
-                result = self._device.read(self._device.inWaiting())
+                result = self._device.read(8) # Only read one answer at a time.
                 print "Result (reader): ", result
             
                 if result != None:
                     self._messages.append(result)
                 # Sleep for a little while -> Should be handled more elegantly
             else:
-                print "Going to sleep for 1 second"
+                print "Going to sleep for 5 second"
                 time.sleep(5)
         
     def on_start(self):
