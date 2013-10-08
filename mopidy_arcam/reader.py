@@ -26,7 +26,7 @@ class ArcamReader(pykka.ThreadingActor):
         # Just store the result unless it should be igonred.
         result = None
         print "Starting loop."
-        while self._device.inWaiting():
+        while True:
             print "inWaiting: ", self._device.inWaiting()
             result = self._device.read(self._device.inWaiting())
             print "Result: ", result
