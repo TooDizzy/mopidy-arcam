@@ -235,7 +235,9 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
     def _readline(self):
         # Read line from device.        
         future = self._reader.get_answer()
-        return future.get()
+        result = future.get()
+        print "Result (_readline):", result 
+        return result
         
 
     #def track_playback_started(self, tl_track):

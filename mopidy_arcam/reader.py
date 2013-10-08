@@ -27,12 +27,13 @@ class ArcamReader(pykka.ThreadingActor):
         result = None
         print "Starting loop."
         while True:
-            print "inWaiting: ", self._device.inWaiting()
-            result = self._device.read(self._device.inWaiting())
-            print "Result: ", result
+            if self._device.inWaiting():
+                print "inWaiting: ", self._device.inWaiting()
+                result = self._device.read(self._device.inWaiting())
+                print "Result (reader): ", result
         
-            if result != None:
-                self._messages.append(result)
+                if result != None:
+                    self._messages.append(result)
         print "End of loop"
         
     def on_start(self):
@@ -43,7 +44,7 @@ class ArcamReader(pykka.ThreadingActor):
     def get_answer(self):
         # Return the oldest command
         answer = self._messages.pop(0)
-        print "Answer: ", answer
+        print "Answer (reader): ", answer
         return answer
     
     
