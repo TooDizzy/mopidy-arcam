@@ -104,8 +104,9 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self._open_connection()
         
         #Starting the reader
+        print "Start thread."
         self._reader = reader.ArcamReader.start(self._device)
-        time.sleep(0.5)
+        print "Start thread is done."
         self._set_device_to_known_state()
 
     def _open_connection(self):
