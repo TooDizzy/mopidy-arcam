@@ -1,12 +1,14 @@
 import logging
-
 import pykka
 import serial
+import time
+
+import mopidy.core
 
 logger = logging.getLogger('mopidy_arcam')
 
 
-class ArcamTalker(pykka.ThreadingActor):
+class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
     """
     Independent thread which does the communication with the Arcam amplifier.
     
@@ -94,17 +96,8 @@ class ArcamTalker(pykka.ThreadingActor):
         # Need to be changed to zones
         self.speakers_a = speakers_a
         self.speakers_b = speakers_b
-        
         self._arcam_volume = None
-
         self._device = None
-
-    #def on_receive(self, message):
-        # Send the command and action to the arcam amp.
-        #command = message.get("command")
-        #if command == "Main.Volume":
-        #    return self._command_device(command, self.ARCAM_ACTION_ASK)
-        #return 0
 
     def on_start(self):
         self._open_connection()
@@ -131,13 +124,12 @@ class ArcamTalker(pykka.ThreadingActor):
         
 
     def _get_device_model(self):
-        #model = self._ask_device('Main.Model')
-        #logger.info('Arcam amplifier: Connected to model "%s"', model)
         # Can't get this information from the Arcam receiver, so it's hardcoded
         return "Arcam AVR300"
 
     def _power_device_on(self):
         self._check_and_set('Main.Power', 'On')
+        time.sleep(5) # Wait for the amp to actually start up and be ready for more input.
 
     def _select_speakers(self):
         if self.speakers_a is not None:
@@ -159,22 +151,6 @@ class ArcamTalker(pykka.ThreadingActor):
         rawVolume = ord(self._ask_device("Main.Volume"))
         self._arcam_volume = rawVolume - self.ARCAM_VOLUME_OFFSET;
         return self._arcam_volume
-
-    #def calibrate_volume(self, current_nad_volume=None):
-        # The NAD C 355BEE amplifier has 40 different volume levels. We have no
-        # way of asking on which level we are. Thus, we must calibrate the
-        # mixer by decreasing the volume 39 times.
-        #if current_nad_volume is None:
-        #    current_nad_volume = self.VOLUME_LEVELS
-        #if current_nad_volume == self.VOLUME_LEVELS:
-        #    logger.info('Arcam amplifier: Calibrating by setting volume to 0')
-        #self._arcam_volume = current_nad_volume
-        #if self._decrease_volume():
-        #    current_nad_volume -= 1
-        #if current_nad_volume == 0:
-        #    logger.info('Arcam amplifier: Done calibrating')
-        #else:
-        #    self.actor_ref.proxy().calibrate_volume(current_nad_volume)
 
     def set_volume(self, volume):
         # Increase or decrease the amplifier volume until it matches the given
@@ -257,3 +233,12 @@ class ArcamTalker(pykka.ThreadingActor):
         if not self._device.isOpen():
             self._device.open()
         return self._device.readline().strip()
+
+    def track_playback_started(self, tl_track):
+        self._power_device_on()
+        self._select_input_source()
+        
+    def playback_state_changed(self, old_state, new_state):
+        print "Playback state: ", new_state
+        
+        
