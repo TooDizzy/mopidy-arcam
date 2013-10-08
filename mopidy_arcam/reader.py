@@ -26,16 +26,18 @@ class ArcamReader(pykka.ThreadingActor):
         # Just store the result unless it should be igonred.
         result = None
         print "Starting loop."
-        while self._device.inWaiting():
-            print "inWaiting: ", self._device.inWaiting()
-            result = self._device.read(self._device.inWaiting())
-            print "Result (reader): ", result
-        
-            if result != None:
-                self._messages.append(result)
-            # Sleep for a little while -> Should be handled more elegantly
-            time.sleep(0.5)
-        print "End of loop"
+        while True:
+            if self._device.inWaiting():
+                print "inWaiting: ", self._device.inWaiting()
+                result = self._device.read(self._device.inWaiting())
+                print "Result (reader): ", result
+            
+                if result != None:
+                    self._messages.append(result)
+                # Sleep for a little while -> Should be handled more elegantly
+            else:
+                print "Going to sleep for 1 second"
+                time.sleep(5)
         
     def on_start(self):
         print "starting reader thread."

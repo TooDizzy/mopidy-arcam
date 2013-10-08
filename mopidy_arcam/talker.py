@@ -237,8 +237,6 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         # Read line from device.        
         future = self._reader.ask({"Command": "Return response."})
         result = future.get()
-        
-#        result = "AV_*P11"
         print "Result (_readline):", result 
         return result
         
