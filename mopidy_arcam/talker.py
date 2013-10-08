@@ -2,6 +2,7 @@ import logging
 import pykka
 import serial
 import time
+import threading
 
 import mopidy.core
 import reader
@@ -99,13 +100,15 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         self.speakers_b = speakers_b
         self._arcam_volume = None
         self._device = None
+        
+        self.lock = threading.Lock()
 
     def on_start(self):
         self._open_connection()
         
         #Starting the reader
         print "Start thread."
-        self._reader = reader.ArcamReader.start(self._device)
+        self._reader = reader.ArcamReader.start(self._device, self.lock)
         print "Start thread is done."
         self._set_device_to_known_state()
 
@@ -228,10 +231,12 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
     def _write(self, data):
         # Write data to device. Prepends and appends a newline to the data, as
         # recommended by the NAD documentation.
+        self.lock.acquire()
         if not self._device.isOpen():
             self._device.open()
         logger.debug('Trying to write: %s', data)
         self._device.write('%s\r\n' % data)
+        self.lock.release()
 
     def _readline(self):
         # Read line from device.        

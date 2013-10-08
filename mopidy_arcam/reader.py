@@ -14,20 +14,20 @@ class ArcamReader(pykka.ThreadingActor):
     _messages = []
     _device = None
     
-    def __init__(self, device):
+    def __init__(self, device, lock):
         super(ArcamReader, self).__init__()
         self._device = device
+        self.lock = lock
         
         
     def _listen_rx(self):
         # Continuously listen on the serial line for any messages from the Arcam amp.
-        
+        self.lock.acquire()
         # Do not trigger action when write was triggered by talker.
         # Just store the result unless it should be igonred.
         result = None
         print "Starting loop."
         while True:
-            self._device.setBreak(True)
             if self._device.inWaiting():
                 print "inWaiting: ", self._device.inWaiting()
                 result = self._device.read(8) # Only read one answer at a time.
@@ -37,8 +37,8 @@ class ArcamReader(pykka.ThreadingActor):
                     self._messages.append(result)
             else:
                 # Sleep for a little while -> Should be handled more elegantly
+                self.lock.release() # nothing more to read.
                 print "Going to sleep for 5 second"
-                self._device.setBreak(False)
                 time.sleep(5)
         
     def on_start(self):
