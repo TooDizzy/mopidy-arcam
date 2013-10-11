@@ -1,6 +1,6 @@
-**********
+************
 Mopidy-Arcam
-**********
+************
 
 `Mopidy <http://www.mopidy.com/>`_ extension for controlling volume using an
 external Arcam amplifier. Developed and tested with an Arcam AVR-300.
@@ -76,6 +76,7 @@ Project resources
 
 Changelog
 =========
+
 v0.1 (2013-10-05)
 -----------------
 
