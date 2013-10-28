@@ -12,8 +12,7 @@ Install by running::
 
     sudo pip install Mopidy-Arcam
 
-Or install the Debian/Ubuntu package from `apt.mopidy.com
-<http://apt.mopidy.com/>`_.
+NB.:: An easy way to configure the serial port (Rx/Tx on the GPIO) to work as a connection for periferials simply follow the rpi-serial-console instructions found here:: https://github.com/lurch/rpi-serial-console.
 
 
 Configuration
