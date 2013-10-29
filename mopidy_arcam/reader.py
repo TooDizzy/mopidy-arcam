@@ -7,8 +7,7 @@ Created on 29/10/2013
 
 import logging
 import pykka
-
-from findertools import sleep
+import time
 
 logger = logging.getLogger('mopidy_arcam')
 
@@ -34,4 +33,4 @@ class ArcamReader(pykka.ThreadingActor):
                 print "Read: ", self._read_lines
             else:
                 print "Nothing yet."
-                sleep(5)
+                time.sleep(5)
