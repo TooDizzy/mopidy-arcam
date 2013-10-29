@@ -3,9 +3,8 @@ import pykka
 import serial
 import time
 
-import mopidy.core
-
 logger = logging.getLogger('mopidy_arcam')
+
 
 
 class ArcamTalker(pykka.ThreadingActor):
@@ -76,6 +75,8 @@ class ArcamTalker(pykka.ThreadingActor):
                            "7" : "AM",
                            "8" : "DVDA"}
     
+    _destruct = False
+    
     def buildRequestString(self, commandCode, zone, action):
         if self.getRequestAction(action) != None:
             resultString = str(self.commandRequestMap.get(commandCode)) + str(zone) + str(self.getRequestAction(action))
@@ -102,6 +103,12 @@ class ArcamTalker(pykka.ThreadingActor):
     def on_start(self):
         self._open_connection()
         self._set_device_to_known_state()
+        
+    def on_stop(self):
+        self._destruct = True
+        
+    def destruct(self):
+        return self._destruct
 
     def _open_connection(self):
         logger.debug('Arcam amplifier: Connecting through "%s"', self.port)
@@ -148,10 +155,8 @@ class ArcamTalker(pykka.ThreadingActor):
             self._check_and_set('Main.Mute', 'On') # turn Mute on
 
     def get_volume(self):
-        logger.info("Getting volume.")
         rawVolume = ord(self._ask_device("Main.Volume"))
         self._arcam_volume = rawVolume - self.ARCAM_VOLUME_OFFSET;
-        logger.info("Volume is now: %s", self._arcam_volume)
         return self._arcam_volume
 
     def set_volume(self, volume):
