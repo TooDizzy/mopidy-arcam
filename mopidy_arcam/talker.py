@@ -151,7 +151,7 @@ class ArcamTalker(pykka.ThreadingActor):
         logger.info("Getting volume.")
         rawVolume = ord(self._ask_device("Main.Volume"))
         self._arcam_volume = rawVolume - self.ARCAM_VOLUME_OFFSET;
-        logger.info("Volume is now: ", self._arcam_volume)
+        logger.info("Volume is now: %s", self._arcam_volume)
         return self._arcam_volume
 
     def set_volume(self, volume):

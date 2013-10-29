@@ -83,7 +83,6 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         # Start listening on the serial port
         # for handling i.e. manual volume change
         print "Starting the reader..."
-        future = self._arcam_talker.get_connection_device()
         self._arcam_reader = reader.ArcamReader.start(self._arcam_talker)
 
 
