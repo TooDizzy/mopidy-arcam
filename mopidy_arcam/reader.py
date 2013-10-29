@@ -7,7 +7,6 @@ Created on 29/10/2013
 
 import logging
 import pykka
-import time
 
 logger = logging.getLogger('mopidy_arcam')
 
@@ -30,20 +29,15 @@ class ArcamReader(pykka.ThreadingActor):
         
     def on_start(self):
         # Let's start reading
-        #logger.info("Starting to read.")
         while (True):
             _response_word = self._arcam_talker.read_word().get()
+            print "Destruct? ", self._arcam_talker.destruct().get()
             if _response_word != None:
                 if len(_response_word) > 0:
                     # We have data -> one command
                     if self._commandresponse_map.get(_response_word[:4]) == "Main.Volume":
                         # Have the volume been updated?
                         self._arcam_talker.update_volume(self._calculate_volume(ord(_response_word[6])))
-            else:
-                print "sleep"
-                _response_word = ""
-                time.sleep(2)
-            
             if self._arcam_talker.destruct().get() == True:
                 break
 

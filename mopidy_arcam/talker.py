@@ -108,6 +108,10 @@ class ArcamTalker(pykka.ThreadingActor):
         print "destruct"
         self._destruct = True
         
+    def stop(self):
+        print "stop"
+        pykka.ThreadingActor.stop(self)
+        
     def destruct(self):
         return self._destruct
 
