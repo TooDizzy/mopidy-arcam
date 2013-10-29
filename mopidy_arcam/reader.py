@@ -31,7 +31,7 @@ class ArcamReader(pykka.ThreadingActor):
         # Let's start reading
         while (True):
             _response_word = self._arcam_talker.read_word().get()
-            print "Destruct? ", self._arcam_talker.destruct().get()
+            #print "Destruct? ", self._arcam_talker.destruct().get()
             if _response_word != None:
                 if len(_response_word) > 0:
                     # We have data -> one command
