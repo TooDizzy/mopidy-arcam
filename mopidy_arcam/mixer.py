@@ -49,12 +49,12 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         return [track]
 
     def get_volume(self, track):
-        return [self._volume_cache]
+        return [self._arcam_talker.get_volume.get()]
 
     def set_volume(self, track, volumes):
         if len(volumes):
             volume = volumes[0]
-            self._volume_cache = volume
+            #self._volume_cache = volume
             self._arcam_talker.set_volume(volume)
 
     def set_mute(self, track, mute):
@@ -79,7 +79,7 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         ).proxy()
         # Ask for the volume of the Arcam receiver
         future = self._arcam_talker.get_volume()
-        self._volume_cache = future.get()
+        #self._volume_cache = future.get()
         
     def _start_arcam_reader(self):
         # Start listening on the serial port

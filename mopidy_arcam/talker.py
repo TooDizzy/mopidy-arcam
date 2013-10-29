@@ -168,10 +168,10 @@ class ArcamTalker(pykka.ThreadingActor):
             self._decrease_volume()
             self._arcam_volume -= 1
         
-    def _calc_volume_char(self, volume):
+    def calc_volume_char(self, volume):
         return chr(volume+self.ARCAM_VOLUME_OFFSET)
     
-    def _calc_volume_int(self, volume):
+    def calc_volume_int(self, volume):
         return ord(volume-self.ARCAM_VOLUME_OFFSET)
 
     def _increase_volume(self):
@@ -181,6 +181,10 @@ class ArcamTalker(pykka.ThreadingActor):
     def _decrease_volume(self):
         # Decrease volume. Returns :class:`True` if confirmed by device.
         self._command_device("Main.Volume", "-")
+
+    def update_volume(self, volume):
+        self._arcam_volume = volume
+
 
     def _check_and_set(self, key, value, responseMap=None):
         for attempt in range(1, 4):
@@ -235,3 +239,8 @@ class ArcamTalker(pykka.ThreadingActor):
         if not self._device.isOpen():
             self._device.open()
         return self._device.readline().strip()
+
+    def read_word(self):
+        if not self._device.isOpen():
+            self._device.open()
+        return self._device.read(8)
