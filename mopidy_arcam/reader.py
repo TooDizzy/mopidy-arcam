@@ -27,7 +27,7 @@ class ArcamReader(pykka.ThreadingActor):
         self._commandresponse_map = self._arcam_talker.commandResponseMap.get()
     
     def _calculate_volume(self, volume):
-        return volume+self._arcam_talker.ARCAM_VOLUME_OFFSET.get()
+        return volume-self._arcam_talker.ARCAM_VOLUME_OFFSET.get()
         
     def on_start(self):
         # Let's start reading
@@ -53,5 +53,6 @@ class ArcamReader(pykka.ThreadingActor):
     
     def on_stop(self):
         self._destruct = True
+        self.stop()
 
     
