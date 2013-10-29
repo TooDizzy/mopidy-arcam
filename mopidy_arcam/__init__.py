@@ -8,7 +8,7 @@ import gobject
 from mopidy import exceptions, ext
 
 
-__version__ = '0.2'
+__version__ = '0.4'
 
 default_config = b"""
 [arcam]
