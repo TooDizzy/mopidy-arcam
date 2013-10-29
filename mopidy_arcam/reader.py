@@ -26,7 +26,7 @@ class ArcamReader(pykka.ThreadingActor):
         self._commandresponse_map = self._arcam_talker.commandResponseMap.get()
     
     def _calculate_volume(self, volume):
-        return volume+self._arcam_talker.ARCAM_VOLUME_OFFSET
+        return volume+self._arcam_talker.ARCAM_VOLUME_OFFSET.get()
         
     def on_start(self):
         # Let's start reading
@@ -38,15 +38,16 @@ class ArcamReader(pykka.ThreadingActor):
                     # We have data -> one command
                     print "Read: ", _response_word
                     print "command: ", _response_word[:4]
-                    print "action: ", _response_word[5:8]
+                    print "action: ", _response_word[5:6]
                     print "Map conversion: ", self._commandresponse_map.get(_response_word[:4])
                     
                     if self._commandresponse_map.get(_response_word[:4]) == "Main.Volume":
                         # Have the volume been updated?
-                        print "ord(_response_word[7])", ord(_response_word[7])
-                        print "Main.Volume have been updated to: ", self._calculate_volume(ord(_response_word[7])).get()
+                        print "ord(_response_word[7])", ord(_response_word[6])
+                        print "Main.Volume have been updated to: ", self._calculate_volume(ord(_response_word[6]))
             else:
                 print "Nothing yet."
+            _response_word = ""
             time.sleep(2)
             
     
