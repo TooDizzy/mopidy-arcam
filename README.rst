@@ -80,3 +80,7 @@ v0.1 (2013-10-05)
 -----------------
 
 - Initial version for the Arcam receiver; based on a fork from the NAD mixer.
+
+v0.2 (2013-10-29)
+-----------------
+- Now Mopidy will also handle if the volume of the amplifier is changed outside Mopidy. The volume is updated more or less instanyly and any client will get the updated volume when asking for the volume.
