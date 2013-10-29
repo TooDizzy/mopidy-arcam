@@ -28,14 +28,15 @@ class ArcamReader(pykka.ThreadingActor):
         # Let's start reading
         while (True):
             logger.info("Starting to read.")
-            _response_word = self._arcam_talker.read_word()
+            _response_word = self._arcam_talker.read_word().get()
             if _response_word != None:
-                # We have data -> one command
-                print "Read: %s", _response_word
-                print "command: %s", _response_word[:4]
-                if self._arcam_talker.commandResponseMap.get(_response_word[:4]) == "Main.Volume" :
-                    # Have the volume been updated?
-                    print "Main.Volume have been updated to: %s", self._arcam_talker.calc_volume_int(_response_word)
+                if len(_response_word) > 0:
+                    # We have data -> one command
+                    print "Read: %s", _response_word
+                    print "command: %s", _response_word[:4]
+                    if self._arcam_talker.commandResponseMap.get(_response_word[:4]) == "Main.Volume" :
+                        # Have the volume been updated?
+                        print "Main.Volume have been updated to: %s", self._arcam_talker.calc_volume_int(_response_word)
             else:
                 print "Nothing yet."
             time.sleep(2)

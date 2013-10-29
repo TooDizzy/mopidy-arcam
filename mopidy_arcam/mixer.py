@@ -49,7 +49,7 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         return [track]
 
     def get_volume(self, track):
-        return [self._arcam_talker.get_volume.get()]
+        return [self._arcam_talker.get_volume().get()]
 
     def set_volume(self, track, volumes):
         if len(volumes):
@@ -78,7 +78,7 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
             speakers_b=self.speakers_b or None
         ).proxy()
         # Ask for the volume of the Arcam receiver
-        future = self._arcam_talker.get_volume()
+        #future = self._arcam_talker.get_volume()
         #self._volume_cache = future.get()
         
     def _start_arcam_reader(self):
