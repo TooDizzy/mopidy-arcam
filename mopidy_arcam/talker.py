@@ -8,7 +8,7 @@ import mopidy.core
 logger = logging.getLogger('mopidy_arcam')
 
 
-class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
+class ArcamTalker(pykka.ThreadingActor):
     """
     Independent thread which does the communication with the Arcam amplifier.
     
@@ -148,8 +148,10 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
             self._check_and_set('Main.Mute', 'On') # turn Mute on
 
     def get_volume(self):
+        logger.info("Getting volume.")
         rawVolume = ord(self._ask_device("Main.Volume"))
         self._arcam_volume = rawVolume - self.ARCAM_VOLUME_OFFSET;
+        logger.info("Volume is now: ", self._arcam_volume)
         return self._arcam_volume
 
     def set_volume(self, volume):
@@ -194,7 +196,7 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
 
     def _ask_device(self, key, responseMap=None):
         self._write(self.buildRequestString(key, self.ARCAM_ZONE, self.ASK_DEVICE_KEY))
-        resultString = self._readline()
+        resultString = self.readline()
         
         if len(resultString) > 0:
             if responseMap != None:
@@ -211,7 +213,7 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         #    value = value.encode('utf-8')
         #self._write('%s=%s' % (key, value))
         self._write(self.buildRequestString(key, self.ARCAM_ZONE, value))
-        resultString = self._readline()
+        resultString = self.readline()
         if len(resultString) > 0:
             if self.actionResponseMap.get(resultString[self.ARCAM_ACTION_PREFIX_LENGTH]) != None:
                 resultString = self.actionResponseMap.get(resultString[self.ARCAM_ACTION_PREFIX_LENGTH])
@@ -227,18 +229,9 @@ class ArcamTalker(pykka.ThreadingActor, mopidy.core.CoreListener):
         logger.debug('Trying to write: %s', data)
         self._device.write('%s\r\n' % data)
 
-    def _readline(self):
+    def readline(self):
         # Read line from device. The result is stripped for leading and
         # trailing whitespace.
         if not self._device.isOpen():
             self._device.open()
         return self._device.readline().strip()
-
-    def track_playback_started(self, tl_track):
-        self._power_device_on()
-        self._select_input_source()
-        
-    def playback_state_changed(self, old_state, new_state):
-        print "Playback state: ", new_state
-        
-        

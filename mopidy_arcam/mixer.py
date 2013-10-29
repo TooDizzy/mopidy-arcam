@@ -15,6 +15,7 @@ except ImportError:
     serial = None  # noqa
 
 from mopidy_arcam import talker
+from mopidy_arcam import reader
 
 
 logger = logging.getLogger('mopidy_arcam')
@@ -78,6 +79,12 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         # Ask for the volume of the Arcam receiver
         future = self._arcam_talker.get_volume()
         self._volume_cache = future.get()
+        
+        # Start listening on the serial port
+        # for handling i.e. manual volume change
+        print "Starting the reader..."
+        future = self._arcam_talker.get_connection_device()
+        self._arcam_reader = reader.ArcamReader.start(self._arcam_talker)
 
 
 def create_track(label, initial_volume, min_volume, max_volume,
