@@ -28,9 +28,9 @@ class ArcamReader(pykka.ThreadingActor):
         # Let's start reading
         while (True):
             logger.info("Starting to read.")
-            self._read_lines = self._arcam_talker.readline()
-            if (len(self._read_lines) > 0):
+            self._read_lines = self._arcam_talker.readline().get()
+            if self._read_lines != None:
                 print "Read: %s", self._read_lines
             else:
                 print "Nothing yet."
-                time.sleep(5)
+            time.sleep(2)
