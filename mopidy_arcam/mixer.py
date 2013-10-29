@@ -66,6 +66,7 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
                 logger.warning('arcammixer dependency pyserial not found')
                 return gst.STATE_CHANGE_FAILURE
             self._start_arcam_talker()
+            self._start_arcam_reader()
         return gst.STATE_CHANGE_SUCCESS
 
     def _start_arcam_talker(self):
@@ -80,10 +81,13 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         future = self._arcam_talker.get_volume()
         self._volume_cache = future.get()
         
+    def _start_arcam_reader(self):
         # Start listening on the serial port
         # for handling i.e. manual volume change
         print "Starting the reader..."
-        self._arcam_reader = reader.ArcamReader.start(self._arcam_talker)
+        self._arcam_reader = reader.ArcamReader.start(
+            self._arcam_talker
+        ).proxy()
 
 
 def create_track(label, initial_volume, min_volume, max_volume,

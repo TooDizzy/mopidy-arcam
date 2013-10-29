@@ -21,6 +21,7 @@ class ArcamReader(pykka.ThreadingActor):
     
     def __init__(self, talker):
         super(ArcamReader, self).__init__()
+        
         self._arcam_talker = talker
         
     def on_start(self):
