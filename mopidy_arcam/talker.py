@@ -105,6 +105,7 @@ class ArcamTalker(pykka.ThreadingActor):
         self._set_device_to_known_state()
         
     def on_stop(self):
+        print "destruct"
         self._destruct = True
         
     def destruct(self):
