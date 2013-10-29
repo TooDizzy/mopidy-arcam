@@ -40,7 +40,8 @@ class ArcamReader(pykka.ThreadingActor):
                     
                     if self._commandresponse_map.get(_response_word[:4]) == "Main.Volume":
                         # Have the volume been updated?
-                        print "Main.Volume have been updated to: ", self._arcam_talker.calc_volume_int(_response_word[7]).get()
+                        print "ord(_response_word[7])", ord(_response_word[7])
+                        print "Main.Volume have been updated to: ", self._arcam_talker.calc_volume_int(ord(_response_word[7])).get()
             else:
                 print "Nothing yet."
             time.sleep(2)
