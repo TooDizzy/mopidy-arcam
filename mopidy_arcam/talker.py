@@ -50,11 +50,11 @@ class ArcamTalker(pykka.ThreadingActor):
                           "AV_/" : "Main.Volume",
                           "AV_." : "Main.Mute",
                           "AV_1" : "Main.Source"}
-    actionRequestMap           = {"On"  : ARCAM_ACTION_ON,
-                                  "Off" : ARCAM_ACTION_OFF,
-                                  "+"   : ARCAM_ACTION_ON,
-                                  "-"   : ARCAM_ACTION_OFF,
-                                  ASK_DEVICE_KEY : ARCAM_ACTION_ASK}
+    actionRequestMap    = {"On"  : ARCAM_ACTION_ON,
+                           "Off" : ARCAM_ACTION_OFF,
+                           "+"   : ARCAM_ACTION_ON,
+                           "-"   : ARCAM_ACTION_OFF,
+                           ASK_DEVICE_KEY : ARCAM_ACTION_ASK}
     actionResponseMap   = {"1": "On",
                            "0": "Off"}
     sourceRequestMap    = {"DVD"  : "0",
