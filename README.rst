@@ -23,7 +23,7 @@ The Mopidy-Arcam extension is enabled by default. To disable it, add the
 following to ``mopidy.conf``::
 
     [arcam]
-    enabled = false
+    enabled = true
 
 The Arcam amplifier must be connected to the machine running Mopidy using a
 serial cable.
@@ -59,11 +59,11 @@ Configuration examples::
 
     # Minimum configuration, if the amplifier is available elsewhere
     [audio]
-    mixer = arcammixer port=/dev/ttyUSB3
+    mixer = arcammixer port=/dev/ttyAMA0
 
     # Full configuration
     [audio]
-    mixer = arcammixer port=/dev/ttyUSB0 source=aux
+    mixer = arcammixer port=/dev/ttyAMA0 source=aux
 
 
 Project resources
