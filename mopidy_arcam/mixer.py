@@ -28,7 +28,7 @@ class ArcamMixer(gst.Element, gst.ImplementsInterface, gst.interfaces.Mixer):
         'Mixer to control Arcam amplifiers using a serial link',
         'Mopidy')
 
-    port = gobject.property(type=str, default='/dev/ttyUSB0')
+    port = gobject.property(type=str, default='/dev/ttyAMA0')
     source = gobject.property(type=str)
     speakers_a = gobject.property(type=str)
     speakers_b = gobject.property(type=str)
